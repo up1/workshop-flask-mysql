@@ -4,18 +4,9 @@ from flask import Flask
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 
-from serializers import AlchemyEncoder
+from demo.serializers import AlchemyEncoder
 
-app = Flask(__name__)
-api = Api(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
-    os.getenv('DB_USER', 'demo_user'),
-    os.getenv('DB_PASSWORD', 'demo_password'),
-    os.getenv('DB_HOST', 'database'),
-    os.getenv('DB_NAME', 'demo')
-)
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 
 class User(db.Model):
@@ -47,7 +38,21 @@ class Index(Resource):
         return ret, 200
 
 
-api.add_resource(Index, '/')
+def create_app() -> Flask:
+    app = Flask(__name__)
+    db.init_app(app)
+    api = Api(app)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
+        os.getenv('DB_USER', 'demo_user'),
+        os.getenv('DB_PASSWORD', 'demo_password'),
+        os.getenv('DB_HOST', 'database'),
+        os.getenv('DB_NAME', 'demo'),
+    )
+    api.add_resource(Index, '/')
+    return app
+
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(host="0.0.0.0", debug=False)
