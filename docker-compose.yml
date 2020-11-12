@@ -1,0 +1,39 @@
+version: '3'
+services:
+  frontend:
+    image: frontend
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - "8888:80"
+
+  backend:
+    image: backend
+    container_name: backend
+    build:
+      context: ./backend
+    environment:
+      DB_HOST: database
+      DB_NAME: demo
+      DB_USER: demo_user
+      DB_PASSWORD: demo_password
+    ports:
+      - "5000:5000"
+
+  database:
+    image: database
+    container_name: database
+    build:
+      context: ./database
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: demo
+      MYSQL_USER: demo_user
+      MYSQL_PASSWORD: demo_password
+
+volumes:
+  mysql-data:
+    driver: local
