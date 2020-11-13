@@ -10,9 +10,9 @@ RUN pip install -r requirements.txt
 COPY . /src
 
 # Testing and coverage
-RUN PYTHONPATH=. pytest -v --junit-xml test-reports/results.xml
+RUN PYTHONPATH=/src pytest -v --junit-xml test-reports/results.xml
 RUN coverage run -m pytest && coverage report && coverage html && coverage xml -o coverage-reports/coverage.xml
 RUN ls
 
 ENTRYPOINT ["python"]
-CMD ["app.py"]
+CMD ["demo/app.py"]
