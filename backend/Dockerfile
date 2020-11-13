@@ -8,7 +8,7 @@ RUN pip install PyMySQL
 COPY requirements.txt /src/requirements.txt
 RUN pip install -r requirements.txt
 COPY . /src
-
+ENV PYTHONPATH=/src
 # Testing and coverage
 RUN PYTHONPATH=/src pytest -v --junit-xml test-reports/results.xml
 RUN coverage run -m pytest && coverage report && coverage html && coverage xml -o coverage-reports/coverage.xml
